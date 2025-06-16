@@ -1,0 +1,12 @@
+# Ignore outputs and logs
+output/
+logs/
+*.log
+*.done
+*.xtc
+*.trr
+*.gro
+*.cpt
+*.tpr
+*.mdp
+*.top
