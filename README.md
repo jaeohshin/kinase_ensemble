@@ -5,7 +5,7 @@ This repository contains a modular pipeline to generate ensembles of kinase prot
 ---
 
 ## 📁 Directory Structure
-``
+```
 kinase_ensemble/
 ├── input/
 │ ├── sequences/ # FASTA files for each kinase
@@ -30,7 +30,7 @@ kinase_ensemble/
 │ └── generate_flowpacker_yaml.py # Optional: templating utility
 ├── logs/ # Log files for each kinase + step
 └── README.md
-``
+```
 
 ---
 
