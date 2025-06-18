@@ -1,13 +1,25 @@
 import os
 import sys
-import subprocess
 
+# Template for the SLURM job script
 template = """#!/bin/bash
-# Direct run script for BioEmu (no SLURM)
+#SBATCH --job-name=bioemu_{kinase}
+#SBATCH --output={log_dir}/bioemu_%j.out
+#SBATCH --error={log_dir}/bioemu_%j.err
+#SBATCH --time=02:00:00
+#SBATCH --partition=normal
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=8G
 
 # Load conda and activate env
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate bioemu
+
+# Set temp dir
+export TMPDIR=/store/jaeohshin/tmp_bioemu/$SLURM_JOB_ID
+mkdir -p $TMPDIR
 
 # Extract sequence from FASTA
 sequence=$(grep -v "^>" {fasta} | tr -d '\\n')
@@ -15,13 +27,13 @@ sequence=$(grep -v "^>" {fasta} | tr -d '\\n')
 # Run BioEmu
 python -m bioemu.sample \\
     --sequence "$sequence" \\
-    --num_samples 100 \\
+    --num_samples 2 \\
     --output_dir {out_dir} \\
     --cache_embeds_dir /store/jaeohshin/.bioemu_embeds_cache \\
     --filter_samples False
 """
 
-def make_local_script(kinase: str):
+def make_slurm_script(kinase: str):
     fasta = f"input/fasta/{kinase}_trimmed.fasta"
     out_dir = f"output/{kinase}/bioemu"
     log_dir = f"logs/{kinase}"
@@ -33,13 +45,11 @@ def make_local_script(kinase: str):
         print(f"[ERROR] FASTA not found: {fasta}")
         return
 
-    script_path = os.path.join(out_dir, "run_bioemu.sh")
-    with open(script_path, "w") as f:
-        f.write(template.format(kinase=kinase, fasta=fasta, out_dir=out_dir))
+    job_script_path = os.path.join(out_dir, "bioemu_job.sh")
+    with open(job_script_path, "w") as f:
+        f.write(template.format(kinase=kinase, fasta=fasta, out_dir=out_dir, log_dir=log_dir))
 
-    os.chmod(script_path, 0o755)
-    print(f"[INFO] Execution script created at {script_path}")
-    return script_path
+    print(f"[INFO] SLURM script created at {job_script_path}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -47,8 +57,4 @@ if __name__ == "__main__":
         sys.exit(1)
 
     kinase = sys.argv[1].lower()
-    script_path = make_local_script(kinase)
-
-    if script_path:
-        print(f"[INFO] Running BioEmu for {kinase}")
-        subprocess.run([script_path])
+    make_slurm_script(kinase)
