@@ -1,0 +1,17 @@
+/usr/bin/which: no colabfold_batch in (/store/jaeohshin/software/pymemdyn:/store/jaeohshin/software/pymodsim:/home/jaeohshin/apps/php-5.6/bin:/home/jaeohshin/apps/scwrl4:/home/jaeohshin/apps:/home/jaeohshin/apps/toolset-master/bin:/home/jaeohshin/apps/toolset-master/perl:/home/jaeohshin/miniconda3/envs/bioemu/bin:/home/jaeohshin/miniconda3/condabin:/home/jaeohshin/.local/bin:/home/jaeohshin/bin:/usr/lib64/ccache:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin)
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/bioemu/resolve/main/checkpoints/bioemu-v1.0/checkpoint.ckpt HTTP/1.1" 302 0
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /microsoft/bioemu/resolve/main/checkpoints/bioemu-v1.0/config.yaml HTTP/1.1" 200 0
+INFO:bioemu.so3_sde:Data loaded from /home/jaeohshin/sampling_so3_cache/cache_igso3_s0.020-2.330-1000_l2000_o2000-3.npz
+INFO:bioemu.so3_sde:Data loaded from /home/jaeohshin/sampling_so3_cache/cache_uso3_s0.020-2.330-1000_o2000-3.npz
+INFO:bioemu.so3_sde:Data loaded from /home/jaeohshin/sampling_so3_cache/cache_score-scaling_s0.020-2.330-1000_l2001_o2000-3.npz
+INFO:__main__:Sampling 2 structures for sequence of length 10 residues...
+INFO:__main__:Using batch size 2
+INFO:__main__:Found 0 previous samples in /store/jaeohshin/work/kinase_ensemble/output_test.
+Sampling batches...:   0%|          | 0/1 [00:00<?, ?it/s]INFO:__main__:Sampling seed=0
+INFO:bioemu.get_embeds:Using cached embeddings in /home/jaeohshin/.bioemu_embeds_cache.
+Sampling batches...: 100%|██████████| 1/1 [00:06<00:00,  6.08s/it]Sampling batches...: 100%|██████████| 1/1 [00:06<00:00,  6.08s/it]
+INFO:__main__:Converting samples to .pdb and .xtc...
+INFO:bioemu.convert_chemgraph:Filtering samples ...
+INFO:bioemu.convert_chemgraph:Filtered 2 samples down to 2 based on structure criteria. Filtering can be disabled with `--filter_samples=False`.
+INFO:__main__:Completed. Your samples are in /store/jaeohshin/work/kinase_ensemble/output_test.

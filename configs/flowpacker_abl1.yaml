@@ -1,0 +1,24 @@
+mode: vf
+
+data:
+  data: bc40
+  train_path:
+  cluster_path:
+  test_path: '/store/jaeohshin/work/kine/output/abl1/bioemu/final_backbones'
+  min_length: 40
+  max_length: 512
+  edge_type: knn
+  max_radius: 16.0
+  max_neighbors: 30
+
+ckpt: '/store/jaeohshin/tools/flowpacker/checkpoints/cluster.pth'
+
+sample:
+  batch_size: 1
+  n_samples: 1
+  use_ema: True
+  eps: 2.0e-3
+  save_trajectory: False
+  coeff: 5.0
+  num_steps: 10
+
