@@ -1,0 +1,1 @@
+../../scripts/download_and_trim_fasta.py
