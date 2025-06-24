@@ -7,7 +7,7 @@ from collections import defaultdict
 # === Paths ===
 fasta_path = "/store/jaeohshin/work/kine/output/abl1/bioemu/sequence.fasta"
 input_dir = "/store/jaeohshin/work/kine/output/abl1/bioemu/gly"
-output_dir = "/store/jaeohshin/work/kine/output/abl1/bioemu/final_backbones"
+output_dir = "/store/jaeohshin/work/kine/output/abl1/final_backbones"
 
 # === Load sequence ===
 seq_record = next(SeqIO.parse(fasta_path, "fasta"))
@@ -53,7 +53,7 @@ for pdb_file in pdb_files:
         raise ValueError(f"Residue count mismatch in {pdb_file}: got {new_res_idx-1}, expected {len(resnames)}")
 
     # Write to clean output dir
-    base = os.path.basename(pdb_file).replace("_gly.pdb", "_corrected.pdb")
+    base = os.path.basename(pdb_file).replace("minimized_backbone_", "final_").replace("_gly", "")
     out_path = os.path.join(output_dir, base)
 
     with open(out_path, "w") as out_f:

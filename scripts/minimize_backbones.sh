@@ -24,7 +24,7 @@ for pdb in backbone_*_gly.pdb; do
     fi
 
     # Step 1: Clean previous files for this structure
-    rm -f em_${id}.* ${id}_processed.gro ${id}_boxed.gro topol.top \#* *.itp *.log *.edr *.trr
+#    rm -f em_${id}.* ${id}_processed.gro ${id}_boxed.gro topol.top \#* *.itp *.log *.edr *.trr
 
     # Step 2: Generate topology and add hydrogens
     gmx pdb2gmx -f "$pdb" -o "${id}_processed.gro" -p topol.top -water "$WATERMODEL" <<EOF
@@ -32,6 +32,17 @@ $FORCEFIELD_ID
 1
 1
 EOF
+
+    # Lower restraint constants in posre.itp (optional step)
+    # Change only the last three fields (fx fy fz) to 50
+    awk '
+    /^[[:space:]]*[0-9]+[[:space:]]+1[[:space:]]+[0-9.]+[[:space:]]+[0-9.]+[[:space:]]+[0-9.]+/ {
+    $3 = $4 = $5 = 50
+    }
+    { print }
+    ' posre.itp > posre_fixed.itp && mv posre_fixed.itp posre.itp
+
+
 
     if [ ! -f "${id}_processed.gro" ]; then
         echo "[ERROR] Failed to generate ${id}_processed.gro — skipping."
@@ -48,10 +59,12 @@ EOF
 
     # Step 4: Create MDP
 cat > em_${id}.mdp <<EOF
+
+define        = -DPOSRES
 integrator    = steep
-emtol         = 1000.0
+emtol         = 100.0
 emstep        = 0.01
-nsteps        = 500
+nsteps        = 5000
 
 cutoff-scheme = Verlet
 coulombtype   = cutoff
@@ -65,7 +78,7 @@ EOF
 
 
     # Step 5: grompp
-    gmx grompp -f em_${id}.mdp -c "${id}_boxed.gro" -p topol.top -o em_${id}.tpr
+    gmx grompp -f em_${id}.mdp -c "${id}_boxed.gro" -r "${id}_boxed.gro" -p topol.top -o em_${id}.tpr
     if [ $? -ne 0 ]; then
         echo "[ERROR] grompp failed for $id — skipping."
         continue
