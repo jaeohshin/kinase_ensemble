@@ -39,43 +39,76 @@ kinase_ensemble/
 
 ---
 
-## 🧬 Pipeline Overview
+## 🧬 Pipeline Overview (with Commands)
 
-Each kinase ensemble is generated through the following stages:
+Each kinase ensemble is generated through the following steps:
 
-1. **BioEmu**  
-   Sample diverse backbone-only structures from a single FASTA sequence.  
+---
+
+### 1. 🧠 BioEmu – Backbone Sampling
+Generate backbone-only structures from FASTA.
+
+```bash
+python scripts/run_bioemu.py abl1
    → `output/<kinase>/bioemu/samples.xtc`
 
-2. **Extract Backbone**  
-   Extract C/N/CA/O atoms from each structure frame.  
+2. 🦴 Extract Backbone Atoms
+
+Extract C/N/CA/O atoms from trajectory frames.
+
+python scripts/extract_backbone.py output/abl1/bioemu
    → `output/<kinase>/bioemu/backbone_*.pdb`
 
-3. **Mutate to Glycine**  
-   All residues are mutated to glycine, and residue indices are renumbered from 1.  
+3. ⚗️ Mutate All Residues to Glycine
+
+Replace sidechains with glycine and renumber residues.
+
+python scripts/add_glycine_sidechains.py output/abl1/bioemu
    → `output/<kinase>/bioemu/gly/backbone_XXX_gly.pdb`
 
-4. **Energy Minimization**  
-   Structures are minimized using GROMACS in vacuum (non-periodic) settings.  
+4. 🔧 Energy Minimization (GROMACS)
+
+Minimize glycine-only structures in vacuum.
+
+bash scripts/minimize_backbones.sh output/abl1/bioemu/gly/
    → `output/<kinase>/bioemu/gly/minimized_backbone_XXX_gly.pdb`
 
-5. **MolProbity Score Evaluation**  
-   Quality of minimized structures is assessed (clash score, rotamer outliers, etc.).  
+5. 📊 MolProbity Scoring (Pre-repacking)
+
+Evaluate structural quality using MolProbity.
+
+cd /home/deepfold/users/jaeohshin/tools/
+bash avg_mpscore.sh
    → Example: `avg 93.96 5.48 0.55 0.46 0.95 265.98`
 
-6. **Restore Real Sequence**  
-   Replace glycine-only residues with the correct sequence from input FASTA.  
+6. 🧬 Restore Real Sequence
+
+Restore the original sequence using residue renaming.
+
+python scripts/correct_resnames.py output/abl1/bioemu/gly/
    → `output/<kinase>/final_backbones/backbone_XXX.pdb`
 
-7. **FlowPacker**  
-   Use a generative model to repack full-atom sidechains.  
-   → `tools/flowpacker/samples/<kinase>/run_1/final_XXX.pdb`  
-   → MolProbity scores are evaluated again.
+7. 🎲 FlowPacker – Sidechain Repacking
 
-8. **NVT Molecular Dynamics**  
-   Perform restrained NVT MD simulations for final refinement.  
-   → `output/<kinase>/nvt/receptor_XXX.pdb`
+Run generative sidechain prediction.
 
+    Edit configs/flowpacker_abl1.yaml or generate from a template.
+
+python scripts/sampler_pdb.py base abl1
+
+→ Output: tools/flowpacker/samples/abl1/run_1/final_XXX.pdb
+
+→ Sample MolProbity Output: avg 92.16 6.85 0.99 31.78 2.50 265.98
+
+8. 🌡️ NVT Molecular Dynamics (GROMACS)
+
+Final structure refinement using restrained MD.
+
+bash scripts/gromacs_scripts.sh abl1
+
+→ Output: output/abl1/nvt/receptor_XXX.pdb
+
+→ Final MolProbity: avg 92.24 7.15 0.61 1.39 1.35 266.00
 ---
 
 ## ✅ Requirements
