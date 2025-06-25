@@ -52,28 +52,28 @@ Generate backbone-only structures from FASTA.
 python scripts/run_bioemu.py abl1
    → `output/<kinase>/bioemu/samples.xtc`
 
-2. 🦴 Extract Backbone Atoms
+### 2. 🦴 Extract Backbone Atoms
 
 Extract C/N/CA/O atoms from trajectory frames.
 
 python scripts/extract_backbone.py output/abl1/bioemu
    → `output/<kinase>/bioemu/backbone_*.pdb`
 
-3. ⚗️ Mutate All Residues to Glycine
+### 3. ⚗️ Mutate All Residues to Glycine
 
 Replace sidechains with glycine and renumber residues.
 
 python scripts/add_glycine_sidechains.py output/abl1/bioemu
    → `output/<kinase>/bioemu/gly/backbone_XXX_gly.pdb`
 
-4. 🔧 Energy Minimization (GROMACS)
+### 4. 🔧 Energy Minimization (GROMACS)
 
 Minimize glycine-only structures in vacuum.
 
 bash scripts/minimize_backbones.sh output/abl1/bioemu/gly/
    → `output/<kinase>/bioemu/gly/minimized_backbone_XXX_gly.pdb`
 
-5. 📊 MolProbity Scoring (Pre-repacking)
+### 5. 📊 MolProbity Scoring (Pre-repacking)
 
 Evaluate structural quality using MolProbity.
 
@@ -81,14 +81,14 @@ cd /home/deepfold/users/jaeohshin/tools/
 bash avg_mpscore.sh
    → Example: `avg 93.96 5.48 0.55 0.46 0.95 265.98`
 
-6. 🧬 Restore Real Sequence
+### 6. 🧬 Restore Real Sequence
 
 Restore the original sequence using residue renaming.
 
 python scripts/correct_resnames.py output/abl1/bioemu/gly/
    → `output/<kinase>/final_backbones/backbone_XXX.pdb`
 
-7. 🎲 FlowPacker – Sidechain Repacking
+### 7. 🎲 FlowPacker – Sidechain Repacking
 
 Run generative sidechain prediction.
 
@@ -100,7 +100,7 @@ python scripts/sampler_pdb.py base abl1
 
 → Sample MolProbity Output: avg 92.16 6.85 0.99 31.78 2.50 265.98
 
-8. 🌡️ NVT Molecular Dynamics (GROMACS)
+### 8. 🌡️ NVT Molecular Dynamics (GROMACS)
 
 Final structure refinement using restrained MD.
 
