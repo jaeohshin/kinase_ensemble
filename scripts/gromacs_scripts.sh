@@ -33,7 +33,7 @@ prepare_topology_once() {
         return
     fi
 
-    FIRST_FRAME="${INPUT_DIR}/final_001.pdb"
+    FIRST_FRAME="${INPUT_DIR}/final_000.pdb"
     if [ ! -f "$FIRST_FRAME" ]; then
         echo "ERROR: $FIRST_FRAME not found"
         exit 1
@@ -66,14 +66,14 @@ process_frame() {
     if [ -f "$OUTPUT_PDB" ]; then echo "✓ Already processed"; return 0; fi
     if [ ! -f "$INPUT_PDB" ]; then echo "✗ Missing input"; return 1; fi
 
-    cp topol.top topol_${i}.top
+#    cp topol.top topol_${i}.top
 
     echo "Step 1: Generate processed PDB only"
-    gmx pdb2gmx -f "$INPUT_PDB" -ignh -o prot_${i}.pdb -p dummy.top <<EOF
+    gmx pdb2gmx -f "$INPUT_PDB" -ignh -o prot_${i}.pdb -p topol_${i}.top <<EOF
 14
 1
 EOF
-    rm -f dummy.top
+#    rm -f dummy.top
 
     echo "Step 2: Set EM restraints"
     sed -i "s/posre.itp/posre_heavy.itp/" topol_${i}.top
@@ -86,7 +86,7 @@ SOL
 EOF
 
     gmx grompp -f "$EM_MDP" -c prot_solv_ions_${i}.pdb -p topol_${i}.top -r prot_solv_ions_${i}.pdb -o minim_${i}.tpr -maxwarn 40
-    gmx mdrun -s minim_${i}.tpr -gpu_id 0 -nt 16 -deffnm minim_${i}
+    gmx mdrun -s minim_${i}.tpr -gpu_id 0 -nt 16 -pin on -deffnm minim_${i}
 
     gmx trjconv -s minim_${i}.tpr -f minim_${i}.gro -pbc mol -ur compact -center -o minim_whole_${i}.pdb <<EOF
 Protein
@@ -95,22 +95,22 @@ EOF
 
     echo "Step 3: Switch to Cα restraints"
     sed -i "s/posre_heavy.itp/posre_Calpha.itp/" topol_${i}.top
-    gmx grompp -f "$NVT_MDP" -c minim_whole_${i}.pdb -p topol_${i}.top -r prot_solv_ions_${i}.pdb -o nvt_${i}.tpr -maxwarn 40
-    gmx mdrun -s nvt_${i}.tpr -gpu_id 0 -nt 16 -deffnm nvt_${i}
+    gmx grompp -f "$NVT_MDP" -c minim_whole_${i}.pdb -p topol_${i}.top -r minim_whole_${i}.pdb -o nvt_${i}.tpr -maxwarn 40
+    gmx mdrun -s nvt_${i}.tpr -gpu_id 0 -nt 16 -pin on -deffnm nvt_${i}
 
     gmx make_ndx -f nvt_${i}.gro -o protein_${i}.ndx <<EOF
-a Protein
+1
 q
 EOF
     gmx editconf -f nvt_${i}.gro -o temp_final_${i}.pdb -n protein_${i}.ndx <<EOF
-Protein
+1
 EOF
     cp temp_final_${i}.pdb "$OUTPUT_PDB"
     echo "✓ Saved → $OUTPUT_PDB"
 
-    #rm -f *#* prot_${i}.pdb prot_box_${i}.pdb prot_solv_${i}.pdb prot_solv_ions_${i}.pdb minim_whole_${i}.pdb
-    #rm -f genion_${i}.tpr minim_${i}.tpr nvt_${i}.tpr
-    #rm -f topol_${i}.top protein_${i}.ndx temp_final_${i}.pdb
+#    rm -f *#* prot_${i}.pdb prot_box_${i}.pdb prot_solv_${i}.pdb prot_solv_ions_${i}.pdb minim_whole_${i}.pdb
+#    rm -f genion_${i}.tpr minim_${i}.tpr nvt_${i}.tpr
+#    rm -f topol_${i}.top protein_${i}.ndx temp_final_${i}.pdb
 }
 
 prepare_topology_once

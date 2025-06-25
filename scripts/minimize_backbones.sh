@@ -24,7 +24,7 @@ for pdb in backbone_*_gly.pdb; do
     fi
 
     # Step 1: Clean previous files for this structure
-#    rm -f em_${id}.* ${id}_processed.gro ${id}_boxed.gro topol.top \#* *.itp *.log *.edr *.trr
+    rm -f em_${id}.* ${id}_processed.gro ${id}_boxed.gro topol.top \#* *.itp *.log *.edr *.trr
 
     # Step 2: Generate topology and add hydrogens
     gmx pdb2gmx -f "$pdb" -o "${id}_processed.gro" -p topol.top -water "$WATERMODEL" <<EOF
