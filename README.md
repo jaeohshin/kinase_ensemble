@@ -56,23 +56,27 @@ python scripts/run_bioemu.py abl1
 
 Extract C/N/CA/O atoms from trajectory frames.
 
+````
 python scripts/extract_backbone.py output/abl1/bioemu
    → `output/<kinase>/bioemu/backbone_*.pdb`
-
+````
 ### 3. ⚗️ Mutate All Residues to Glycine
 
 Replace sidechains with glycine and renumber residues.
 
+````
 python scripts/add_glycine_sidechains.py output/abl1/bioemu
    → `output/<kinase>/bioemu/gly/backbone_XXX_gly.pdb`
+````
 
 ### 4. 🔧 Energy Minimization (GROMACS)
 
 Minimize glycine-only structures in vacuum.
 
+````
 bash scripts/minimize_backbones.sh output/abl1/bioemu/gly/
    → `output/<kinase>/bioemu/gly/minimized_backbone_XXX_gly.pdb`
-
+````
 ### 5. 📊 MolProbity Scoring (Pre-repacking)
 
 Evaluate structural quality using MolProbity.
@@ -85,30 +89,33 @@ bash avg_mpscore.sh
 
 Restore the original sequence using residue renaming.
 
+````
 python scripts/correct_resnames.py output/abl1/bioemu/gly/
    → `output/<kinase>/final_backbones/backbone_XXX.pdb`
+````
 
 ### 7. 🎲 FlowPacker – Sidechain Repacking
 
 Run generative sidechain prediction.
 
     Edit configs/flowpacker_abl1.yaml or generate from a template.
-
+````
 python scripts/sampler_pdb.py base abl1
 
 → Output: tools/flowpacker/samples/abl1/run_1/final_XXX.pdb
 
 → Sample MolProbity Output: avg 92.16 6.85 0.99 31.78 2.50 265.98
-
+````
 ### 8. 🌡️ NVT Molecular Dynamics (GROMACS)
 
 Final structure refinement using restrained MD.
-
+````
 bash scripts/gromacs_scripts.sh abl1
 
 → Output: output/abl1/nvt/receptor_XXX.pdb
 
 → Final MolProbity: avg 92.24 7.15 0.61 1.39 1.35 266.00
+````
 ---
 
 ## ✅ Requirements
