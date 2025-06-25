@@ -51,7 +51,7 @@ Generate backbone-only structures from FASTA.
 ```bash
 python scripts/run_bioemu.py abl1
    → `output/<kinase>/bioemu/samples.xtc`
-
+````
 ### 2. 🦴 Extract Backbone Atoms
 
 Extract C/N/CA/O atoms from trajectory frames.
