@@ -122,7 +122,7 @@ bash scripts/gromacs_scripts.sh abl1
 
 - Python ≥ 3.10
 - [BioEmu](https://github.com/microsoft/bioemu)
-- [FlowPacker](https://github.com/microsoft/flowpacker)
+- [FlowPacker](https://gitlab.com/mjslee0921/flowpacker)
 - [GROMACS](https://www.gromacs.org/) ≥ 2021
 - [PDBFixer](https://github.com/openmm/pdbfixer) (OpenMM toolkit)
 - MolProbity tools (for quality assessment)
