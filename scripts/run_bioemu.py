@@ -15,14 +15,14 @@ sequence=$(grep -v "^>" {fasta} | tr -d '\\n')
 # Run BioEmu
 python -m bioemu.sample \\
     --sequence "$sequence" \\
-    --num_samples 100 \\
+    --num_samples 50 \\
     --output_dir {out_dir} \\
     --cache_embeds_dir /store/jaeohshin/.bioemu_embeds_cache \\
     --filter_samples False
 """
 
 def make_local_script(kinase: str):
-    fasta = f"input/fasta/{kinase}_trimmed.fasta"
+    fasta = f"input/fasta/{kinase}.fasta"
     out_dir = f"output/{kinase}/bioemu"
     log_dir = f"logs/{kinase}"
 

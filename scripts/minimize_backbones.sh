@@ -85,7 +85,9 @@ EOF
     fi
 
     # Step 6: Run minimization
-    gmx mdrun -v -deffnm em_${id}
+#    gmx mdrun -v -deffnm em_${id}
+# Sep. 15th, I added -ntmpi 1 to prevent error
+    gmx mdrun -v -deffnm em_${id} -ntmpi 1
 
     # Step 7: Save minimized structure
     gmx trjconv -s em_${id}.tpr -f em_${id}.gro -o "minimized_${pdb}" <<< 0

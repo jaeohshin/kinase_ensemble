@@ -13,12 +13,11 @@
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate gro
 
-#KINASES=("egfr")
-KINASES=("egfr" "lck" "mp2k1" "plk1")
-#KINASES=("abl1" "akt1" "akt2" "braf" "cdk2" "csf1r" "egfr" "fak1" "fgfr1" "igf1r" "jak2" "kpcb" "kit" "lck" "mapk2" "met" "mk01" "mk10" "mk14" "mp2k1" "plk1" "rock1" "src" "tgfr1" "vgfr2" "wee1")
+KINASES=("abl1" "akt1" "akt2" "braf" "cdk2" "csf1r" "egfr" "fak1" "fgfr1")
+#"igf1r" "jak2" "kpcb" "kit" "lck" "mapk2" "met" "mk01" "mk10" "mk14" "mp2k1" "plk1" "rock1" "src" "tgfr1" "vgfr2" "wee1")
 
 for kinase in "${KINASES[@]}"; do
     echo "🚀 Starting GROMACS refinement for $kinase at $(date)"
-    bash scripts/gromacs_scripts_new.sh "$kinase" 50 
+    bash scripts/gromacs_scripts_new.sh "$kinase" 50
     echo "✅ [$kinase] refinement complete at $(date)"
 done

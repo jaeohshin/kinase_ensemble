@@ -32,7 +32,7 @@ def main(tsv_file):
                 fasta_record.id = kinase_lower
                 fasta_record.description = f"from PDB {pdbid}"
 
-                out_name = f"{kinase_lower}_trimmed.fasta"
+                out_name = f"{kinase_lower}.fasta"
                 with open(out_name, "w") as out_f:
                     SeqIO.write(fasta_record, out_f, "fasta")
                 print(f"[OK] Saved: {out_name}")
@@ -42,7 +42,7 @@ def main(tsv_file):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python download_fasta_seqres_only.py kinases.tsv")
+        print("Usage: python download_fasta_seqres_only.py kinase.txt")
         sys.exit(1)
     main(sys.argv[1])
 
